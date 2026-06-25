@@ -1,33 +1,40 @@
-"use client";
+import prisma from "@/lib/prisma";
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import { ShieldCheck, Gem, Sparkles, ImageIcon } from "lucide-react";
+import AddToCartButton from "@/components/ui/AddToCartButton";
 
-import { use } from "react";
-import { useCartStore } from "@/store/useCartStore";
-import { ShoppingBag, ShieldCheck, Gem, Sparkles } from "lucide-react";
+// A página agora é Server Component para ir buscar dados ao Prisma
+export default async function ProductDetails({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  
+  // Procura o produto na base de dados através do ID
+  const product = await prisma.product.findUnique({
+    where: { id: resolvedParams.id }
+  });
 
-// Simulando o banco de dados temporariamente
-const getProduct = (id: string) => ({
-  id,
-  name: "Colar Banhado a Ouro 18k com Pingente",
-  price: 189.90,
-  category: "Colares",
-  image: "✨",
-  description: "Colar delicado banhado a ouro 18k, verniz antialérgico e camada de proteção dupla. Perfeito para compor mix de colares ou uso solo trazendo uma sofisticação discreta ao seu dia a dia.",
-});
-
-export default function ProductDetails({ params }: { params: Promise<{ id: string }> }) {
-  // No Next 15, params é uma Promise
-  const resolvedParams = use(params);
-  const product = getProduct(resolvedParams.id);
-  const addItem = useCartStore((state) => state.addItem);
+  // Se o produto não existir (ID inválido), mostra a página 404 nativa do Next.js
+  if (!product) {
+    notFound();
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-24">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
         
-        {/* Área de Imagens */}
-        <div className="relative aspect-square bg-brand-bg rounded-3xl flex items-center justify-center text-6xl">
-           {/* Aqui no futuro entrará a foto em alta resolução da joia */}
-          {product.image}
+        {/* Área de Imagens (Agora com a foto real) */}
+        <div className="relative aspect-square bg-brand-bg rounded-3xl flex items-center justify-center overflow-hidden border border-gray-100 shadow-sm">
+          {product.imageUrl ? (
+            <Image 
+              src={product.imageUrl} 
+              alt={product.name} 
+              fill 
+              className="object-cover"
+              priority // Carrega a imagem principal mais rápido
+            />
+          ) : (
+            <ImageIcon className="w-24 h-24 text-gray-300 opacity-50" />
+          )}
         </div>
 
         {/* Informações da Joia */}
@@ -43,11 +50,12 @@ export default function ProductDetails({ params }: { params: Promise<{ id: strin
           </p>
 
           <p className="text-dark-700 leading-relaxed mb-10">
-            {product.description}
+            Semijoia exclusiva da coleção Chic & Charm. Banhada com materiais de altíssima qualidade, 
+            desenvolvida para garantir um brilho duradouro e realçar a sua elegância em qualquer ocasião.
           </p>
 
           {/* Features da Semijoia */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10 border-y border-gray-200 py-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10 border-y border-gray-100 py-6">
             <div className="flex flex-col items-center text-center gap-2">
               <ShieldCheck className="w-6 h-6 text-brand" />
               <span className="text-xs font-medium text-dark-700">1 Ano de Garantia</span>
@@ -58,17 +66,12 @@ export default function ProductDetails({ params }: { params: Promise<{ id: strin
             </div>
             <div className="flex flex-col items-center text-center gap-2">
               <Gem className="w-6 h-6 text-brand" />
-              <span className="text-xs font-medium text-dark-700">Hipoalergênico</span>
+              <span className="text-xs font-medium text-dark-700">Hipoalergénico</span>
             </div>
           </div>
 
-          <button 
-            onClick={() => addItem(product)}
-            className="w-full bg-dark-900 text-white py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-brand transition-colors duration-300 font-medium text-lg shadow-elegant"
-          >
-            <ShoppingBag className="w-5 h-5" />
-            Adicionar à Sacola
-          </button>
+          {/* O nosso novo Client Component trata de adicionar ao carrinho */}
+          <AddToCartButton product={product} />
         </div>
       </div>
     </div>
