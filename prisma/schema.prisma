@@ -8,11 +8,51 @@ datasource db {
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  name        String
-  price       Float
-  category    String
-  imageUrl    String   // Guardará o caminho da imagem (/uploads/nome-da-foto.jpg)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               String   @id @default(cuid())
+  name             String
+  price            Float
+  promotionalPrice Float?   // <-- NOVO CAMPO: Preço promocional (opcional)
+  category         String
+  imageUrl         String
+  
+  description      String?  
+  material         String?  
+  plating          String?  
+  warranty         String?  
+  isHypoallergenic Boolean  @default(true)
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  orderItems       OrderItem[]
+}
+
+model Order {
+  id           String      @id @default(cuid())
+  customerName String
+  email        String
+  phone        String
+  address      String
+  city         String
+  state        String
+  zipCode      String
+  total        Float
+  status       String      @default("PENDENTE") // Pode ser: PENDENTE, PAGO, ENVIADO
+  
+  items        OrderItem[]
+  
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  quantity  Int
+  price     Float   // Guarda o preço exato pago no dia (importante caso o preço da joia mude no futuro)
+  
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
 }

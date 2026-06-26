@@ -16,7 +16,13 @@ export default function ProductCard({ product }: ProductCardProps) {
     <div className="group cursor-pointer">
       <div className="relative aspect-[4/5] bg-brand-bg rounded-2xl overflow-hidden mb-4 border border-gray-100 shadow-sm">
         
-        {/* Renderiza a imagem real do banco de dados */}
+        {/* Etiqueta de Oferta flutuante */}
+        {product.promotionalPrice && (
+          <div className="absolute top-3 left-3 z-20 bg-brand text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest shadow-md">
+            Oferta
+          </div>
+        )}
+
         {product.imageUrl ? (
           <Image 
             src={product.imageUrl} 
@@ -30,7 +36,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         )}
         
-        <div className="absolute bottom-4 left-0 right-0 px-4 translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+        <div className="absolute bottom-4 left-0 right-0 px-4 translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20">
           <button 
             onClick={(e) => {
               e.preventDefault();
@@ -48,12 +54,25 @@ export default function ProductCard({ product }: ProductCardProps) {
         <p className="text-xs font-semibold text-brand tracking-wider uppercase mb-1">
           {product.category}
         </p>
-        <h3 className="font-serif text-lg text-dark-900 font-medium leading-tight mb-2 hover:text-brand transition-colors">
+        <h3 className="font-serif text-lg text-dark-900 font-medium leading-tight mb-2 hover:text-brand transition-colors line-clamp-1">
           {product.name}
         </h3>
-        <p className="font-sans font-semibold text-dark-800">
-          R$ {product.price.toFixed(2)}
-        </p>
+        
+        {/* Lógica de Preço Promocional */}
+        {product.promotionalPrice ? (
+          <div className="flex items-center gap-2">
+            <span className="font-sans text-sm text-gray-400 line-through">
+              R$ {product.price.toFixed(2)}
+            </span>
+            <span className="font-sans font-semibold text-brand">
+              R$ {product.promotionalPrice.toFixed(2)}
+            </span>
+          </div>
+        ) : (
+          <p className="font-sans font-semibold text-dark-800">
+            R$ {product.price.toFixed(2)}
+          </p>
+        )}
       </Link>
     </div>
   );

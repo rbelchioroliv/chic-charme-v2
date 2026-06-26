@@ -5,9 +5,14 @@ export interface Product {
   id: string;
   name: string;
   price: number;
+  promotionalPrice?: number | null;
   category: string;
-  imageUrl: string; // <-- Mudamos de "image" para "imageUrl"
-  description?: string;
+  imageUrl: string;
+  description?: string | null;
+  material?: string | null;
+  plating?: string | null;
+  warranty?: string | null;
+  isHypoallergenic?: boolean | null;
 }
 
 export interface CartItem extends Product {
@@ -23,6 +28,7 @@ interface CartStore {
   updateQuantity: (productId: string, quantity: number) => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
+  clearCart: () => void;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -57,8 +63,15 @@ export const useCartStore = create<CartStore>()(
         )
       })),
 
+      clearCart: () => set({ items: [] }),
+
       getTotalItems: () => get().items.reduce((total, item) => total + item.quantity, 0),
-      getTotalPrice: () => get().items.reduce((total, item) => total + (item.price * item.quantity), 0),
+      getTotalPrice: () => {
+        return get().items.reduce((total, item) => {
+          const currentPrice = item.promotionalPrice ? item.promotionalPrice : item.price;
+          return total + (currentPrice * item.quantity);
+        }, 0);
+      },
     }),
     {
       name: 'chic-charme-cart-v2',

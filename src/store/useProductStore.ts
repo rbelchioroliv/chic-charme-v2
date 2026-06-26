@@ -35,6 +35,24 @@ export const useProductStore = create<ProductStore>((set) => ({
     }
   },
 
+  // Adicione esta função dentro do seu useProductStore
+updateProduct: async (id: string, formData: FormData) => {
+  try {
+    const res = await fetch(`/api/produtos/${id}`, {
+      method: 'PUT',
+      body: formData
+    });
+    if (!res.ok) throw new Error("Erro ao atualizar");
+    const updatedProduct = await res.json();
+    
+    set((state) => ({
+      products: state.products.map(p => p.id === id ? updatedProduct : p)
+    }));
+  } catch (error) {
+    console.error(error);
+  }
+},
+
   deleteProduct: async (id) => {
     await fetch(`/api/produtos/${id}`, { method: 'DELETE' });
     set((state) => ({ products: state.products.filter(p => p.id !== id) }));

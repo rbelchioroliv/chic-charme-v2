@@ -20,17 +20,16 @@ export default function CartSidebar() {
     <>
       {/* Overlay escuro de fundo */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-dark-900/50 backdrop-blur-sm z-[60] transition-opacity"
           onClick={toggleCart}
         />
       )}
 
       {/* Painel Lateral */}
-      <div 
-        className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white z-[70] shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+      <div
+        className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white z-[70] shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col ${isOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         {/* Cabeçalho */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
@@ -38,7 +37,7 @@ export default function CartSidebar() {
             <ShoppingBag className="w-6 h-6" />
             Sua Sacola
           </h2>
-          <button 
+          <button
             onClick={toggleCart}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
           >
@@ -57,7 +56,7 @@ export default function CartSidebar() {
             <div className="space-y-6">
               {items.map((item) => (
                 <div key={item.id} className="flex gap-4">
-                  
+
                   {/* Div da Imagem Atualizada */}
                   <div className="relative w-20 h-24 bg-brand-bg rounded-lg flex items-center justify-center text-xs text-brand-dark flex-shrink-0 overflow-hidden border border-gray-100">
                     {item.imageUrl ? (
@@ -70,9 +69,11 @@ export default function CartSidebar() {
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
                       <h3 className="font-medium text-dark-900 line-clamp-1">{item.name}</h3>
-                      <p className="text-brand font-semibold text-sm">R$ {item.price.toFixed(2)}</p>
+                      <p className="text-brand font-semibold text-sm">
+                        R$ {(item.promotionalPrice || item.price).toFixed(2)}
+                      </p>
                     </div>
-                    
+
                     <div className="flex items-center justify-between mt-2">
                       <div className="flex items-center border border-gray-200 rounded-lg">
                         <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-1.5 hover:bg-gray-50 text-dark-700">
@@ -103,8 +104,8 @@ export default function CartSidebar() {
                 R$ {getTotalPrice().toFixed(2)}
               </span>
             </div>
-            
-            <Link 
+
+            <Link
               href="/checkout"
               onClick={toggleCart}
               className="w-full flex justify-center bg-dark-900 text-white py-4 rounded-xl font-medium hover:bg-brand transition-colors"
