@@ -1,5 +1,6 @@
 import ProductCard from "@/components/ui/ProductCard";
 import prisma from "@/lib/prisma";
+import Link from "next/link";
 
 export default async function Home() {
   const products = await prisma.product.findMany({
@@ -21,9 +22,10 @@ export default async function Home() {
             <p className="text-lg text-gray-400 mb-10 max-w-md leading-relaxed font-light">
               Descubra semijoias de luxo com banho de alta qualidade e garantia. Selecionadas a dedo para destacar a sua luz própria.
             </p>
-            <button className="bg-brand text-white px-8 py-4 rounded-full font-medium hover:bg-brand-light transition-colors duration-300">
+            {/* AGORA É UM LINK REAL PARA A COLEÇÃO */}
+            <Link href="/colecao" className="inline-block bg-brand text-white px-8 py-4 rounded-full font-medium hover:bg-brand-light transition-colors duration-300">
               Ver Coleção Completa
-            </button>
+            </Link>
           </div>
           <div className="relative h-[400px] lg:h-[600px] bg-dark-800 rounded-[40px] rotate-3 overflow-hidden border border-dark-700">
             <div className="absolute inset-0 flex items-center justify-center text-brand-light font-serif text-2xl rotate-[-3deg]">
@@ -41,9 +43,10 @@ export default async function Home() {
             </h2>
             <p className="text-dark-700">As peças mais desejadas do nosso garimpo.</p>
           </div>
-          <button className="hidden md:block text-brand-dark font-semibold hover:text-brand transition-colors">
+          {/* AGORA É UM LINK REAL PARA A COLEÇÃO */}
+          <Link href="/colecao" className="hidden md:block text-brand-dark font-semibold hover:text-brand transition-colors">
             Ver tudo &rarr;
-          </button>
+          </Link>
         </div>
 
         {products.length > 0 ? (

@@ -10,13 +10,21 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const addItem = useCartStore(state => state.addItem);
+  // Puxamos também o isOpen e o toggleCart
+  const { addItem, isOpen, toggleCart } = useCartStore();
+
+  const handleAdd = (e: React.MouseEvent) => {
+    e.preventDefault(); // Impede que o clique no botão ative o link da foto
+    addItem(product);
+    if (!isOpen) {
+      toggleCart();
+    }
+  };
 
   return (
     <div className="group cursor-pointer">
       <div className="relative aspect-[4/5] bg-brand-bg rounded-2xl overflow-hidden mb-4 border border-gray-100 shadow-sm">
         
-        {/* Etiqueta de Oferta flutuante */}
         {product.promotionalPrice && (
           <div className="absolute top-3 left-3 z-20 bg-brand text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest shadow-md">
             Oferta
@@ -38,10 +46,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         
         <div className="absolute bottom-4 left-0 right-0 px-4 translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20">
           <button 
-            onClick={(e) => {
-              e.preventDefault();
-              addItem(product);
-            }}
+            onClick={handleAdd}
             className="w-full bg-white/90 backdrop-blur text-dark-900 font-medium py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-brand hover:text-white transition-colors shadow-elegant"
           >
             <ShoppingBag className="w-4 h-4" />
@@ -58,7 +63,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           {product.name}
         </h3>
         
-        {/* Lógica de Preço Promocional */}
         {product.promotionalPrice ? (
           <div className="flex items-center gap-2">
             <span className="font-sans text-sm text-gray-400 line-through">

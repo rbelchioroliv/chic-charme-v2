@@ -29,7 +29,7 @@ export default function Header() {
 
   const navLinks = [
     { name: "Início", path: "/" },
-    { name: "Coleção", path: "/colecao" },
+    { name: "Coleções", path: "/colecao" }, // <-- Plural aqui
     { name: "Nossa Essência", path: "/sobre" },
   ];
 

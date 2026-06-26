@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
+import Navbar from "@/components/layout/Header";
 import CartSidebar from "@/components/layout/CartSidebar";
 
 const inter = Inter({ 
